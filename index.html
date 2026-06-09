@@ -636,7 +636,7 @@
 
 <script>
   // ── CONFIG ────────────────────────────────────────────────────
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJelI3rSIadMH56M5iDJtPCJRjUlVFa2U3JRHRgFQgxGM2hz5xUzFo7rfG72JRnqi-/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz57S9xKHWqTOlYMaeASc9eVQbVEv92UQ1BhKOMvZ0LRmNJOlgpE_SC7lRVGcvcSuC2/exec';
   // ─────────────────────────────────────────────────────────────
 
   // Default to today
@@ -756,7 +756,11 @@
       const result = await response.json();
 
       if (result.status === 'ok') {
-        showToast('✓ Batch recorded', 'success');
+        if (result.warnings && result.warnings.length > 0) {
+          showToast('⚠️ Saved, but: ' + result.warnings.join(' | '), 'error');
+        } else {
+          showToast('✓ Batch recorded', 'success');
+        }
         const savedDate = date;
         document.getElementById('readingForm').reset();
         dateInput.value = savedDate;
