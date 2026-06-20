@@ -1,0 +1,13 @@
+name = "brix-worker"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Non-sensitive config — fine in source control
+[vars]
+SHEET_ID  = "1_xRTe_AaPOsfhpP9mtrZYBvOgxsh_1daCUqJFSLTtBA"
+SHEET_TAB = "Brix Readings"
+
+# Secrets — set via CLI, never committed:
+#   wrangler secret put SA_EMAIL
+#   wrangler secret put SA_PRIVATE_KEY
+#   wrangler secret put DRIVE_FOLDER_ID

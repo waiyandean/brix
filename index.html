@@ -626,7 +626,7 @@
       <a href="https://docs.google.com/spreadsheets/d/1_xRTe_AaPOsfhpP9mtrZYBvOgxsh_1daCUqJFSLTtBA" target="_blank">
         M&amp;R Batch Records sheet
       </a>
-      via Google Apps Script.
+      via Cloudflare Worker.
     </p>
 
   </form>
@@ -636,7 +636,7 @@
 
 <script>
   // ── CONFIG ────────────────────────────────────────────────────
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz57S9xKHWqTOlYMaeASc9eVQbVEv92UQ1BhKOMvZ0LRmNJOlgpE_SC7lRVGcvcSuC2/exec';
+  const WORKER_URL = 'https://brix-worker.YOUR_SUBDOMAIN.workers.dev';
   // ─────────────────────────────────────────────────────────────
 
   // Default to today
@@ -722,8 +722,8 @@
       return;
     }
 
-    if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-      showToast('⚠️ Apps Script URL not configured yet.', 'error');
+    if (WORKER_URL.includes('YOUR_SUBDOMAIN')) {
+      showToast('⚠️ Worker URL not configured yet.', 'error');
       return;
     }
 
@@ -742,15 +742,18 @@
         readingBefore:   before,
         readingAfter:    document.getElementById('readingAfter').value || '',
         photoBeforeName: beforeFile.name,
-        photoAfterName:  afterFile.name,
+        photoBeforeType: beforeFile.type || 'image/jpeg',
+        photoAfterName:  afterFile ? afterFile.name  : '',
+        photoAfterType:  afterFile ? afterFile.type  : '',
         photoBeforeData: beforeB64,
         photoAfterData:  afterB64,
         actions:         document.getElementById('actions').value.trim(),
       };
 
-      const response = await fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        body:   JSON.stringify(payload),
+      const response = await fetch(WORKER_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
       });
 
       const result = await response.json();
